@@ -1,3 +1,4 @@
+import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -24,6 +25,30 @@ public class ReaderCSV {
         .sort(BsonDocument.parse("{age: 1}")).limit(1).iterator().next().getString("name"));
     System.out.println("Cписок курсов самого старого студента - " + collection.find()
         .sort(BsonDocument.parse("{age: -1}")).limit(1).iterator().next().getString("courses"));
+    String minAgeStudent = collection.find()
+        .sort(BsonDocument.parse("{age: 1}"))
+        .limit(1).iterator().next().getString("age");
+    String maxAgeStudent = collection.find()
+        .sort(BsonDocument.parse("{age: -1}")).limit(1).iterator().next().getString("age");
+    String bsonDoc = "{\"age\": \"%s\"}";
+
+    System.out.println("\nВсе самые молодые студенты ");
+    collection.find(BsonDocument.parse(String.format(bsonDoc, minAgeStudent))).forEach(
+        (Block<? super Document>) doc ->
+            System.out.println("Имя "
+                + doc.getString("name")
+                + " | Возраст "
+                + doc.getString("age"))
+    );
+    System.out.println("\nВсе самые старые студенты ");
+    collection.find(BsonDocument.parse(String.format(bsonDoc, maxAgeStudent))).forEach(
+        (Block<? super Document>) doc ->
+            System.out.println("Имя "
+                + doc.getString("name")
+                + " | Возраст "
+                + doc.getString("courses"))
+    );
+
 
   }
 
